@@ -17,13 +17,13 @@ a.c = @(t,x) actuatorControl(t,x,a); %pressure as a fn of state
 
 % load parameters
 l.m = 0;
-l.x0 = [0.5; 0]; %defines length
+l.x0 = [1; 0]; %defines length
 
 % simulation
 t_max = 5;
 [t_vec, x_vec] = actuatorSim(a,l,t_max);
 
-% plots and animation
+% plots
 figure(1);
 % position
 subplot(2,1,1);
@@ -38,3 +38,6 @@ F_vec = actuatorForce(eps_vec, P_vec, x_vec(:,2), a);
 plot(t_vec, F_vec);
 xlabel('Time (s)');
 ylabel('Force (N)');
+
+% animation
+actuatorAnimation(a,t_vec,x_vec(:,1),false,1);

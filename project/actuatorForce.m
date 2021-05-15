@@ -13,5 +13,6 @@ function F = actuatorForce(eps, P, v, a)
     mu = a.fk + (a.fs - a.fk)*exp(v/a.vf);
     
     % dynamic force
-    F = F_s - mu.*S.*P.*sign(v);
+    % TODO: figure out where the complex values are coming from
+    F = real(F_s - mu.*S.*P.*sign(v));
 end
