@@ -42,8 +42,10 @@ classdef SpringClass < Shape
             yCoilPoints = sin(coilPoints)*radius;
             zCoilPoints = cos(coilPoints)*radius;
             % Add endpoints (centered)
-            obj.y = [0 yCoilPoints 0];
-            obj.z = [0 zCoilPoints 0];
+            %obj.y = [0 yCoilPoints 0];
+            %obj.z = [0 zCoilPoints 0];
+            obj.y = yCoilPoints;
+            obj.z = zCoilPoints;
             % Set the x positions
             obj.updateState(f,l);
         end % SpringClass
@@ -52,9 +54,10 @@ classdef SpringClass < Shape
             % Save the frame
             obj.frame = f;
             % Coil length is 70% spring length
-            xCoil = linspace(l*0.15,l*0.85,length(obj.y)-2);
+            xCoil = linspace(0,l,length(obj.y));
             % Endpoints
-            obj.x = [0 xCoil l];
+            %obj.x = [0 xCoil l];
+            obj.x = xCoil;
         end
 
         function plot(obj)
