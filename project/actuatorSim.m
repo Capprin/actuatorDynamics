@@ -9,12 +9,12 @@ end
 % state: a_pos, a_vel, l_pos, l_vel
 function dx = dynamics(t,x,a,l)
     % velocity
-    v = x(2);
+    vel = x(2);
     % compute force
     eps = (a.l0-x(1))/a.l0;
     P = a.c(t,x);
-    F = actuatorForce(eps,P,v,a);
+    F = actuatorForce(eps,P,vel,a);
     % accelerate both actuator and load at once
-    a = F/(a.m+l.m);
-    dx = [v; a];
+    accel = F/(a.m+l.m);
+    dx = [vel; accel];
 end
