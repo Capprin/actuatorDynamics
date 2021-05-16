@@ -36,6 +36,14 @@
                 % adjust to be similar to Farhan's McKibbens
                 % DISCUSS AS A GROUP
     % add limits
+        % force, length limits are implicit in the model (refer to paper)
+        % can also add pressure limits
+            % depends on control
+            % absolute max, as well as max. differential
+            % DISCUSS AS A GROUP
+    % hack spring animation more:
+        % expand radially with contraction
+        % reflect sheath angle alpha
 % next week:
     % more complex dynamics:
         % mass with friction?
