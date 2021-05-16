@@ -13,14 +13,28 @@
         % is that correct?
             % probably
     % reasonable pressure control curve (long-period sin wave)
+        % done
+        % aren't returning to init. len. as force approaches 0
+            % lack of damping?
+                % order of friction might be very small
+            % no force returning us there in the model (I beleive)
+                % DISCUSS AS A GROUP
     % validate frictional behavior
-        % expect low (static) force, then spike in trans. to kf
+        % expect low (static) friction, then spike in trans. to kf
+            % this does occur
         % does friction act in the right direction?
+            % sure
         % why do we see complex values? that isn't right
+            % due to eps. added warning; don't do extension
         % confirm histeresis
             % extension/contraction should have different forces
             % compare with literature values
+                % will do as soon as model behavior is agreed on
         % are the constants reasonable?
+            % probably not (too big, I think)
+                % refer to paper for their actuators
+                % adjust to be similar to Farhan's McKibbens
+                % DISCUSS AS A GROUP
     % add limits
 % next week:
     % more complex dynamics:
@@ -45,7 +59,7 @@ a.c = @(t,x) actuatorControl(t,x,a); %pressure as a fn of state
 
 % load parameters
 l.m = 0;
-l.x0 = [1.5; 0]; %defines length
+l.x0 = [1; 0]; %defines length
 
 % simulation
 t_max = 5;
@@ -62,7 +76,7 @@ ylabel('Position (m)');
 subplot(2,1,2);
 eps_vec = (a.l0-x_vec(:,1))/a.l0;
 P_vec = actuatorControl(t_vec, x_vec, a);
-F_vec = actuatorForce(eps_vec, P_vec, x_vec(:,2), a);
+[F_vec, F_s, F_f] = actuatorForce(eps_vec, P_vec, x_vec(:,2), a);
 plot(t_vec, F_vec);
 xlabel('Time (s)');
 ylabel('Force (N)');
