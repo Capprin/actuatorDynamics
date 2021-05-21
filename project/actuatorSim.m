@@ -13,7 +13,7 @@ function dx = dynamics(t,x,a,l)
     % compute force
     eps = (a.l0-x(1))/a.l0;
     P = a.c(t,x);
-    F = actuatorForce(eps,P,vel,a);
+    F = actuatorForce(eps,P,vel,a) + l.f(t,x);
     % accelerate both actuator and load at once
     accel = F/(a.m+l.m);
     dx = [vel; accel];

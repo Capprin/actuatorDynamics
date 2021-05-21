@@ -4,7 +4,7 @@
     % P: pressure
     % vel: velocity
     % a: actuator struct
-function [F, F_s, F_f] = actuatorForce(eps, P, vel, a)
+function [F, F_s, F_f, F_sp] = actuatorForce(eps, P, vel, a)
     % sanitize
     if eps < 0
         warning('Model in extension causes residual imaginary components')
@@ -18,12 +18,19 @@ function [F, F_s, F_f] = actuatorForce(eps, P, vel, a)
     F_s = pi*a.r0^2.*P.*(c1.*(1-eps).^2-c2);
     
     % frictional force
-    S = 2.*pi.*a.r0.*a.l0.*sin(a.a0)./((1-eps).*sqrt(1-cos(a.a0).^2.*(1-eps).^2));
-    mu = a.fk + (a.fs - a.fk)*exp(vel/a.vf);
-    F_f = mu.*S.*P.*sign(vel);
+    if a.do_f
+        S = 2.*pi.*a.r0.*a.l0.*sin(a.a0)./((1-eps).*sqrt(1-cos(a.a0).^2.*(1-eps).^2));
+        mu = a.fk + (a.fs - a.fk)*exp(vel/a.vf);
+        F_f = mu.*S.*P.*sign(vel);
+    else
+        F_f = zeros(size(F_s));
+    end
+    
+    % parallel spring
+    F_sp = a.k.*eps.*a.l0 + a.d.*vel;
     
     % dynamic force (negative for contraction)
-    F = -(F_s - F_f);
+    F = -(F_s - F_f - F_sp);
     if eps < 0
         F = real(F);
     end
