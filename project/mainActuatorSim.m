@@ -1,53 +1,16 @@
 % defines constants and does output for a McKibben actuator simulation
-
-% TODO (and questions):
-    % figure out extension/contraction
-        % when does the actuator do extension? should it, ever?
-            % there was some convention disagreement; fixed with a flipped
-            % sign in actuatorForce.m
-    % reconcile initial length and force behavior:
-        % does l0 have to agree with initial eps?
-            % no
-        % what happens when they don't?
-            % elastic properties of actuator rapidly come into play
-        % is that correct?
-            % probably
-    % reasonable pressure control curve (long-period sin wave)
-        % done
-        % aren't returning to init. len. as force approaches 0
-            % lack of damping?
-                % order of friction might be very small
-            % no force returning us there in the model (I beleive)
-                % DISCUSS AS A GROUP
-    % validate frictional behavior
-        % expect low (static) friction, then spike in trans. to kf
-            % this does occur
-        % does friction act in the right direction?
-            % sure
-        % why do we see complex values? that isn't right
-            % due to eps. added warning; don't do extension
-        % confirm histeresis
-            % extension/contraction should have different forces
-            % compare with literature values
-                % will do as soon as model behavior is agreed on
-        % are the constants reasonable?
-            % probably not (too big, I think)
-                % refer to paper for their actuators
-                % adjust to be similar to Farhan's McKibbens
-                % DISCUSS AS A GROUP
-    % add limits
-        % force, length limits are implicit in the model (refer to paper)
-        % can also add pressure limits
-            % depends on control
-            % absolute max, as well as max. differential
-            % DISCUSS AS A GROUP
+    
+% TODO:
     % hack spring animation more:
+        % make radius accurate
         % expand radially with contraction
         % reflect sheath angle alpha
-% next week:
-    % more complex dynamics:
-        % mass with friction?
-        % mass with its own force/position input?
+    % add limits
+        % length
+        % pressure:
+            % absolute
+            % rate of change
+            % control curve
     % closed-loop control
     % pdf sampling for sensing
 
@@ -57,7 +20,11 @@ a.r0 = 0.02;
 a.a0 = 2*pi/360*20;
 a.x0 = [0; 0];
 a.m = 1;
+% parallel spring parameters
+a.k = 1;
+a.d = 0;
 % sheath friction
+a.do_f = false;
 a.fs = 0.015;
 a.fk = 0.105;
 a.vf = 0.15; %trans. vel for s-k friction
@@ -66,8 +33,9 @@ a.s = @(t,x) actuatorSensing(t,x,a); %len/vel as a fn of state
 a.c = @(t,x) actuatorControl(t,x,a); %pressure as a fn of state
 
 % load parameters
-l.m = 0;
+l.m = 1;
 l.x0 = [1; 0]; %defines length
+l.f = @(t,x) 0;
 
 % simulation
 t_max = 5;
@@ -76,18 +44,28 @@ t_max = 5;
 % plots
 figure(1);
 % position
-subplot(2,1,1);
+subplot(3,1,1);
 plot(t_vec, x_vec(:,1));
 xlabel('Time (s)');
 ylabel('Position (m)');
+title('McKibben End Position');
 % EE force
-subplot(2,1,2);
+subplot(3,1,2);
 eps_vec = (a.l0-x_vec(:,1))/a.l0;
 P_vec = actuatorControl(t_vec, x_vec, a);
-[F_vec, F_s, F_f] = actuatorForce(eps_vec, P_vec, x_vec(:,2), a);
+[F_vec, F_s, F_f, F_sp] = actuatorForce(eps_vec, P_vec, x_vec(:,2), a);
 plot(t_vec, F_vec);
 xlabel('Time (s)');
 ylabel('Force (N)');
+title('McKibben Aggregate End Force');
+subplot(3,1,3);
+plot(t_vec, [-F_s, F_f, F_sp]);
+xlabel('Time (s)');
+ylabel('Force (N)');
+title('McKibben Force Components');
+legend('Static Force', 'Frictional Force', 'Spring Force');
 
 % animation
-actuatorAnimation(a,t_vec,x_vec(:,1),false,1);
+figure(2);
+clf;
+actuatorAnimation(a,t_vec,x_vec(:,1),false,1,2);
