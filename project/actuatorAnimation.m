@@ -1,4 +1,4 @@
-function actuatorAnimation(a, t, x, export_video, playback_rate)
+function actuatorAnimation(a, t, x, export_video, playback_rate, fignum)
     % FPS for playback and video export
     FPS = 60; % If your computer cannot plot in realtime, lower this.
 
@@ -11,7 +11,11 @@ function actuatorAnimation(a, t, x, export_video, playback_rate)
     massObj.colors = zeros(8,3);
 
     % Create a figure handle
-    h.figure = figure;
+    if ~exist('fignum', 'var')
+        h.figure = figure;
+    else
+        h.figure = figure(fignum);
+    end
     %This sets figure dimension, dictating video dimensions
     h.figure.Position(3:4) = [1280 720];
     movegui(h.figure)
@@ -35,7 +39,7 @@ function actuatorAnimation(a, t, x, export_video, playback_rate)
     set(gca, 'Color', 'w');
     % Setup videowriter object
     if export_video
-       v = VideoWriter('changingAnimation.mp4', 'MPEG-4');
+       v = VideoWriter('McKibbenAnimation.mp4', 'MPEG-4');
        v.FrameRate = FPS;
        open(v)
     end
