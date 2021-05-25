@@ -15,7 +15,7 @@ function [F, F_s, F_f, F_sp] = actuatorForce(eps, P, vel, a)
     % static force
     c1 = 3/tan(a.a0)^2;
     c2 = 1/sin(a.a0)^2;
-    F_s = pi*a.r0^2.*P.*(c1.*(1-eps).^2-c2);
+    F_s = pi*a.r0^2.*(P.^(1.8)*1000).*(c1.*(1-eps).^2-c2);
     
     % frictional force
     if a.do_f

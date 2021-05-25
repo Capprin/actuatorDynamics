@@ -21,8 +21,8 @@ a.a0 = 2*pi/360*20;
 a.x0 = [0; 0];
 a.m = 1;
 % parallel spring parameters
-a.k = 50;
-a.d = -10;
+a.k = 200;
+a.d = -30;
 % sheath friction
 a.do_f = false;
 a.fs = 0.015;
@@ -32,10 +32,10 @@ a.vf = 0.15; %trans. vel for s-k friction
 a.s = @(t,x) actuatorSensing(t,x,a); %len/vel as a fn of state
 a.c = @(t,x) actuatorControl(t,x,a); %pressure as a fn of state
 % desired behavior
-per = 2;
+per = 3;
 freq = 1/per;
-a.x_des = @(t) (3/4)+(cos(t.*pi./freq))./4;
-a.dx_des = @(t) -sin(t.*pi./freq)./4.*pi./freq;
+a.x_des = @(t) (7/8)+(cos(t.*pi./freq))./8;
+a.dx_des = @(t) -sin(t.*pi./freq)./8.*pi./freq;
 
 % load parameters
 l.m = 1;
