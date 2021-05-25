@@ -32,7 +32,7 @@ a.vf = 0.15; %trans. vel for s-k friction
 a.s = @(t,x) actuatorSensing(t,x,a); %len/vel as a fn of state
 a.c = @(t,x) actuatorControl(t,x,a); %pressure as a fn of state
 % desired behavior
-per = 3;
+per = 1;
 freq = 1/per;
 a.x_des = @(t) (7/8)+(cos(t.*pi./freq))./8;
 a.dx_des = @(t) -sin(t.*pi./freq)./8.*pi./freq;
@@ -61,6 +61,7 @@ subplot(3,1,2);
 eps_vec = (a.l0-x_vec(:,1))/a.l0;
 % pressure
 P = arrayfun(@(t,x1, x2) actuatorControl(t,[x1 x2],a), t_vec, x_vec(:,1), x_vec(:,2));
+P = P*14.504;
 P_vec = actuatorControl(t_vec, x_vec, a);
 [F_vec, F_s, F_f, F_sp] = actuatorForce(eps_vec, P_vec, x_vec(:,2), a);
 plot(t_vec, F_vec);
@@ -79,7 +80,7 @@ set(gcf, 'Position',  [100, 100, 1000, 800])
 plot(t_vec,P);
 title('McKibben Internal Presssure');
 xlabel('Time (s)');
-ylabel('Pressure (bar)');
+ylabel('Pressure (psi)');
 
 % animation
 figure(2);

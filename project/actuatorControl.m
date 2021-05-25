@@ -1,8 +1,8 @@
 % defines pressure control signal dependent on state
 function P = actuatorControl(t,x,a)
     
-    Kp = 3000;
-    Kd = 500;
+    Kp = 300;
+    Kd = 50;
     
     bar = @(psi) 0.0689476 * psi;
     

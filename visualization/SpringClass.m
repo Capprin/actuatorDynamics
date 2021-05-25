@@ -66,7 +66,7 @@ classdef SpringClass < Shape
 
             % Plot the spring
             obj.plotHandle = plot3(plotX,plotY,plotZ);
-            set(obj.plotHandle, 'Color',[1 0.4 0], 'LineWidth',5);
+            set(obj.plotHandle, 'Color',[0.5 0 0.5], 'LineWidth',5);
             hold on
         end
 
