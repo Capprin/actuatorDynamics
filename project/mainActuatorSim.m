@@ -16,6 +16,10 @@ a.dp_max = 110;
 freq = 3/2; %cycles/second
 a.x_des = @(t) (7/8)+(cos(2*t.*pi.*freq))./8;
 a.dx_des = @(t) -sin(2*t.*pi.*freq)./8*2.*pi.*freq;
+% desired behavior
+per = 1;
+freq = 1/per;
+a.f_des = @(t) -10 + 2*sin(t*pi/freq);
 % behavior
 a.s = @(t,x) actuatorSensing(t,x,a); %len/vel as a fn of state
 a.c = @(t,x) actuatorControl(t,x,a); %pressure as a fn of state
@@ -34,7 +38,7 @@ figure(1);
 set(gcf, 'Position',  [100, 100, 1000, 800])
 % position
 subplot(4,1,1);
-plot(t_vec, [x_vec(:,1) a.x_des(t_vec)]);
+plot(t_vec, x_vec(:,1));
 xlabel('Time (s)');
 ylabel('Position (m)');
 title('McKibben End Position');
@@ -56,16 +60,18 @@ legend('Internal Pressure', 'Desired Pressure');
 subplot(4,1,3);
 eps_vec = (a.l0-x_vec(:,1))/a.l0;
 [F_vec, F_s, F_sp] = actuatorForce(eps_vec, P_vec, x_vec(:,2), a);
-plot(t_vec, F_vec);
+plot(t_vec, [F_vec a.f_des(t_vec)]);
 xlabel('Time (s)');
 ylabel('Force (N)');
-title('McKibben Aggregate End Force');
+title('McKibben End Effector Forces');
+legend('Aggregate', 'Desired');
+% force components
 subplot(4,1,4);
 plot(t_vec, [-F_s, F_sp]);
 xlabel('Time (s)');
 ylabel('Force (N)');
-title('McKibben Force Components');
-legend('Static Force', 'Spring Force');
+title('McKibben Internal Force Components');
+legend('Force due to Pressure', 'Force due to Spring');
 
 figure(2);
 dP_vec = arrayfun(@(p_des, p_curr) pressureControl(a, p_des, p_curr), P_des, x_vec(:,3));
@@ -75,6 +81,6 @@ xlabel('Time (s)');
 ylabel('P/s (psi)');
 
 % animation
-figure(3);
-clf;
-actuatorAnimation(a,t_vec,x_vec(:,1),false,1,3);
+%figure(3);
+%clf;
+%actuatorAnimation(a,t_vec,x_vec(:,1),false,1,3);

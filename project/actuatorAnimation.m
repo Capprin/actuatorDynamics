@@ -6,11 +6,9 @@ function actuatorAnimation(a, t, x, export_video, playback_rate, fignum)
     massObj = CubeClass(2*a.r0*[1 1]);
     actuatorObj1 = SpringClass;
     actuatorObj2 = SpringClass;
-    lineObj = CubeClass([0.01,0.2]);
     
     % colors
     massObj.colors = zeros(8,3);
-    lineObj.colors = [ones(8,1)*(215/255) ones(8,1)*(63/255) ones(8,1)*(9/255)];
 
     % Create a figure handle
     if ~exist('fignum', 'var')
@@ -26,7 +24,6 @@ function actuatorAnimation(a, t, x, export_video, playback_rate, fignum)
     massObj.plot;
     actuatorObj1.plot;
     actuatorObj2.plot;
-    lineObj.plot;
 
     % Figure properties
     view(2)
@@ -62,16 +59,12 @@ function actuatorAnimation(a, t, x, export_video, playback_rate, fignum)
         massObj.resetFrame
         massObj.globalMove(SE3([x_state(1) + a.r0, 0, 0]));
         
-        lineObj.resetFrame
-        lineObj.globalMove(SE3([a.x_des(t_plt), 0, -1]));
-        
         actuatorObj1.updateState(SE3, x_state(1));
         actuatorObj1.globalMove(SE3([a.x0(1) 0 0]));
         actuatorObj2.updateState(SE3, x_state(1));
         actuatorObj2.globalMove(SE3([0 0 0 pi 0 0]));
 
         % Update data
-        lineObj.updatePlotData
         massObj.updatePlotData
         actuatorObj1.updatePlotData
         actuatorObj2.updatePlotData

@@ -1,10 +1,21 @@
 % defines pressure control signal dependent on state
 function P = actuatorControl(t,x,a)
     bar = @(psi) 0.0689476 * psi;
+
+    % do derivative control for force
+    k = 1; % don't know how this works, don't change it
+    % TODO: shift desired force somehow?
+    dx_des = -a.f_des(t) / k;
     
-    % gains
-    Kp = 300;
-    Kd = 50;
+    % gain and position control
+    Kp = 60; % tunes abs. force magnitude
+    Kd = 1; % tunes response amplitude
+    P = bar(Kp.*(x(1) - 0.75*a.l0 + a.x0(1)) + Kd.*(dx_des - x(2)));
     
-    P = bar(Kp.*(-a.x_des(t) + x(1)) + Kd.*(-a.dx_des(t) + x(2)));
+    % control limits
+    if P<0
+        P = 0;
+    elseif P > bar(60)
+        P = bar(60);
+    end
 end
