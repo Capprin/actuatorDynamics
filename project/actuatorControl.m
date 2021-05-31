@@ -7,11 +7,4 @@ function P = actuatorControl(t,x,a)
     Kd = 50;
     
     P = bar(Kp.*(-a.x_des(t) + x(1)) + Kd.*(-a.dx_des(t) + x(2)));
-    
-    % control limits
-    if P<0
-        P = 0;
-    elseif P > bar(60)
-        P = bar(60);
-    end
 end
