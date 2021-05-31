@@ -5,13 +5,6 @@
     % vel: velocity
     % a: actuator struct
 function [F, F_s, F_sp] = actuatorForce(eps, P, vel, a)
-    % sanitize
-    if eps < 0
-        warning('Model in extension causes residual imaginary components')
-        [~, id] = lastwarn;
-        warning('off',id);
-    end
-
     % static force
     c1 = 3/tan(a.a0)^2;
     c2 = 1/sin(a.a0)^2;
@@ -22,7 +15,12 @@ function [F, F_s, F_sp] = actuatorForce(eps, P, vel, a)
     
     % dynamic force (negative for contraction)
     F = -(F_s - F_sp);
-    if eps < 0
+    % address complex values
+    if ~isreal(F)
+        warning('Model in extension causes residual imaginary components')
+        [~, id] = lastwarn;
+        warning('off',id);
+        % fix force
         F = real(F);
     end
 end
