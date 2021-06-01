@@ -8,6 +8,10 @@ function actuatorAnimation(a, t, x, export_video, playback_rate, fignum)
     actuatorObj2 = SpringClass;
     lineObj = CubeClass([0.01,0.2]);
     
+    % Passive Dynamics
+    pass_spring = SpringClass(SE3, 0.5);
+    
+    
     % colors
     massObj.colors = zeros(8,3);
     lineObj.colors = [ones(8,1)*(215/255) ones(8,1)*(63/255) ones(8,1)*(9/255)];
@@ -27,6 +31,9 @@ function actuatorAnimation(a, t, x, export_video, playback_rate, fignum)
     actuatorObj1.plot;
     actuatorObj2.plot;
     lineObj.plot;
+    
+    % Passive Dynamics
+    pass_spring.plot;
 
     % Figure properties
     view(2)
@@ -69,12 +76,19 @@ function actuatorAnimation(a, t, x, export_video, playback_rate, fignum)
         actuatorObj1.globalMove(SE3([a.x0(1) 0 0]));
         actuatorObj2.updateState(SE3, x_state(1));
         actuatorObj2.globalMove(SE3([0 0 0 pi 0 0]));
+        
+        % Passive Dynamics
+        pass_spring.updateState(SE3, (a.l0-x_state(1)));
+        pass_spring.globalMove(SE3([a.x0(1) 0.1 0])); % a.l0 - eps.*a.l0
 
         % Update data
         lineObj.updatePlotData
         massObj.updatePlotData
         actuatorObj1.updatePlotData
         actuatorObj2.updatePlotData
+        
+        % Passive Dynamics
+        pass_spring.updatePlotData
         
 
         if export_video %Draw as fast as possible for video export

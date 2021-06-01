@@ -15,8 +15,9 @@ function [F, F_s, F_sp] = actuatorForce(eps, P, vel, a)
     
     % passive_dyn spring
     k_pass = 5;
-    c_pass = 30;
-    F_pass = k_pass.*eps.*a.l0 + c_pass.*vel;
+    c_pass = 20;
+
+    F_pass = k_pass.*(a.l0 - eps.*a.l0) + c_pass.*vel;
     
     
     % dynamic force (negative for contraction)
