@@ -8,14 +8,7 @@ function P = actuatorControl(t,x,a)
     dx_des = -a.f_des(t) / k;
     
     % gain and position control
-    Kp = 60; % tunes abs. force magnitude
-    Kd = 1; % tunes response amplitude
-    P = bar(Kp.*(x(1) - 0.75*a.l0 + a.x0(1)) + Kd.*(dx_des - x(2)));
-    
-    % control limits
-    if P<0
-        P = 0;
-    elseif P > bar(60)
-        P = bar(60);
-    end
+    baseline = 20; % starting pressure
+    Kd = 10; % tunes response amplitude
+    P = bar(baseline + Kd.*(dx_des - x(2)));
 end

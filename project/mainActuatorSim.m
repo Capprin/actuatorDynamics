@@ -13,15 +13,9 @@ a.p_max = 60;
 a.p_min = 0;
 a.dp_max = 110;
 % desired behavior
-freq = 3/2; %cycles/second
-a.x_des = @(t) (7/8)+(cos(2*t.*pi.*freq))./8;
-a.dx_des = @(t) -sin(2*t.*pi.*freq)./8*2.*pi.*freq;
-% desired behavior
-per = 1;
-freq = 1/per;
-a.f_des = @(t) -10 + 2*sin(t*pi/freq);
+freq = 1;
+a.f_des = @(t) -5 + 2*sin(t*pi*freq);
 % behavior
-a.s = @(t,x) actuatorSensing(t,x,a); %len/vel as a fn of state
 a.c = @(t,x) actuatorControl(t,x,a); %pressure as a fn of state
 
 % load parameters
@@ -73,12 +67,12 @@ ylabel('Force (N)');
 title('McKibben Internal Force Components');
 legend('Force due to Pressure', 'Force due to Spring');
 
-figure(2);
-dP_vec = arrayfun(@(p_des, p_curr) pressureControl(a, p_des, p_curr), P_des, x_vec(:,3));
-plot(t_vec, 14.504*dP_vec);
-title('Differential Pressure');
-xlabel('Time (s)');
-ylabel('P/s (psi)');
+%figure(2);
+%dP_vec = arrayfun(@(p_des, p_curr) pressureControl(a, p_des, p_curr), P_des, x_vec(:,3));
+%plot(t_vec, 14.504*dP_vec);
+%title('Differential Pressure');
+%xlabel('Time (s)');
+%ylabel('P/s (psi)');
 
 % animation
 %figure(3);

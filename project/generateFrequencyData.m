@@ -2,8 +2,8 @@
 % does a surface error plot w.r.t. amplitude, frequency\
 
 % stuff to change
-offset = 7/8;
-amplitudes = 1/32:1/32:1/4;
+offset = -5;
+amplitudes = 0.5:0.5:3;
 frequencies = 1:10;
 t_max = 15;
 
@@ -33,12 +33,14 @@ for am = 1:length(amplitudes)
         amp = amplitudes(am);
         freq = frequencies(fr);
         % parameter-specific functions
-        a.x_des = @(t) offset + amp*cos(2*pi*t*freq);
-        a.dx_des = @(t) -amp*2*pi*freq*sin(2*pi*t*freq);
+        a.f_des = @(t) offset + amp*cos(2*pi*t*freq);
         a.c = @(t,x) actuatorControl(t,x,a);
         % simulation, error
         [t_vec, x_vec] = actuatorSim(a,l,t_max);
-        error_vec = abs((x_vec(1) - a.x_des(t_vec)')./a.x_des(t_vec)');
+        P_vec = x_vec(:,3);
+        eps_vec = (a.l0-x_vec(:,1))/a.l0;
+        F_vec = actuatorForce(eps_vec, P_vec, x_vec(:,2), a);
+        error_vec = abs((F_vec - a.f_des(t_vec))./a.f_des(t_vec));
         errors(am,fr) = mean(error_vec);
     end
 end
@@ -49,9 +51,9 @@ errors = errors'; %transpose for surface plot
 ribbon(frequencies, 100*errors);
 [num, dem] = rat(amplitudes);
 labels = arrayfun(@(n,d) [num2str(n) '/' num2str(d)], num, dem, 'UniformOutput', false);
-xticks(linspace(0,10,length(amplitudes)));
+xticks(linspace(0,length(amplitudes),length(amplitudes)));
 xticklabels(labels);
-xlabel('Amplitude (m)');
+xlabel('Amplitude (N)');
 ylabel('Frequency (Hz)');
 zlabel('%Error');
 title('McKibben Periodic Task Performance');
