@@ -129,9 +129,13 @@ function [eventVal,isterminal,direction] = contactEvent(t,x,a,l,dynamics_attache
     
     % to avoid contact event at first retraction, make sure there's a
     % certain time before and after to fit within a specific window
-    if 1.5 < t && t < 2.0
+    if 0.1 < t && x(5) > 0.1
         mckibben_acc = dx(4);
     else
+        mckibben_acc = 0;
+    end
+    
+    if x(1) ~= x(2)
         mckibben_acc = 0;
     end
     

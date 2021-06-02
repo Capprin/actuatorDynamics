@@ -31,7 +31,7 @@ l.x0 = [1; 0]; %defines length
 l.f = @(t,x) 0;
 
 % simulation
-t_max = 8;
+t_max = 5;
 [t_vec, x_vec] = actuatorSim(a,l,t_max);
 
 % plots
@@ -82,7 +82,6 @@ title('Differential Pressure');
 xlabel('Time (s)');
 ylabel('P/s (psi)');
 
-% TODO: Animation stuff
 % animation
 figure(3);
 clf;
