@@ -3,19 +3,17 @@ function actuatorAnimation(a, t, x, export_video, playback_rate, fignum)
     FPS = 60; % If your computer cannot plot in realtime, lower this.
 
     % Create objects
-    massObj = CubeClass(2*a.r0*[1 1]);
+    massObj = CubeClass(2*a.r0*[2 2]);
     actuatorObj1 = SpringClass;
     actuatorObj2 = SpringClass;
-    lineObj = CubeClass([0.01,0.2]);
-    
-    % Passive Dynamics
-    pass_spring = SpringClass(SE3, 0.5);
-    
+    paddleObj = CubeClass(2*a.r0*[0.2 3]);
+    nailObj = CubeClass(2*a.r0*[40 0.5]);
     
     % colors
     massObj.colors = zeros(8,3);
-    lineObj.colors = [ones(8,1)*(215/255) ones(8,1)*(63/255) ones(8,1)*(9/255)];
-
+    paddleObj.colors = zeros(8,3);
+    nailObj.colors = [ones(8,1)*(215/255) ones(8,1)*(63/255) ones(8,1)*(9/255)];
+    
     % Create a figure handle
     if ~exist('fignum', 'var')
         h.figure = figure;
@@ -30,10 +28,8 @@ function actuatorAnimation(a, t, x, export_video, playback_rate, fignum)
     massObj.plot;
     actuatorObj1.plot;
     actuatorObj2.plot;
-    lineObj.plot;
-    
-    % Passive Dynamics
-    pass_spring.plot;
+    paddleObj.plot;
+    nailObj.plot;
 
     % Figure properties
     view(2)
@@ -58,37 +54,34 @@ function actuatorAnimation(a, t, x, export_video, playback_rate, fignum)
     tic;
     for t_plt = t(1):playback_rate*1.0/FPS:t(end)
 
-        x_state = interp1(t',x',t_plt);
+        x_state = interp1(t',x,t_plt);
 
         % Set axis limits (These will respect the aspect ratio set above)
-        h.figure.Children(1).XLim = [0, 1.5];
+        h.figure.Children(1).XLim = [0, 3];
         h.figure.Children(1).YLim = [-0.2 0.2];
         h.figure.Children(1).ZLim = [-1.0, 1.0];
 
         % Set positions
         massObj.resetFrame
-        massObj.globalMove(SE3([x_state(1) + a.r0, 0, 0]));
+        massObj.globalMove(SE3([x_state(2) + a.r0*2, 0, 0]));
         
-        lineObj.resetFrame
-        lineObj.globalMove(SE3([a.x_des(t_plt), 0, -1]));
+        paddleObj.resetFrame
+        paddleObj.globalMove(SE3([x_state(1), 0, 0]));
+        
+        nailObj.resetFrame
+        nailObj.globalMove(SE3([x_state(3) + a.r0*44, 0, 0]));
         
         actuatorObj1.updateState(SE3, x_state(1));
-        actuatorObj1.globalMove(SE3([a.x0(1) 0 0]));
+        actuatorObj1.globalMove(SE3([0 0 0]));
         actuatorObj2.updateState(SE3, x_state(1));
         actuatorObj2.globalMove(SE3([0 0 0 pi 0 0]));
-        
-        % Passive Dynamics
-        pass_spring.updateState(SE3, (a.l0-x_state(1)));
-        pass_spring.globalMove(SE3([a.x0(1) 0.1 0])); % a.l0 - eps.*a.l0
 
         % Update data
-        lineObj.updatePlotData
         massObj.updatePlotData
+        paddleObj.updatePlotData
         actuatorObj1.updatePlotData
         actuatorObj2.updatePlotData
-        
-        % Passive Dynamics
-        pass_spring.updatePlotData
+        nailObj.updatePlotData
         
 
         if export_video %Draw as fast as possible for video export
