@@ -31,7 +31,7 @@ l.x0 = [1; 0]; %defines length
 l.f = @(t,x) 0;
 
 % simulation
-t_max = 5;
+t_max = 8;
 [t_vec, x_vec] = actuatorSim(a,l,t_max);
 
 % plots
@@ -43,7 +43,7 @@ plot(t_vec', [x_vec(:,1) a.x_des(t_vec)' x_vec(:,2) x_vec(:,3)]);
 xlabel('Time (s)');
 ylabel('Position (m)');
 title('McKibben End Position');
-legend('End effector position', 'Desired position', 'Load position ;)', 'Nail position :)');
+legend('End effector position', 'Desired position', 'Load position', 'Nail position');
 % pressure
 subplot(4,1,2);
 P_vec = x_vec(:,7);
