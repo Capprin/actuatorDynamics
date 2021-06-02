@@ -13,15 +13,9 @@ function [F, F_s, F_sp] = actuatorForce(eps, P, vel, a)
     % parallel spring
     F_sp = a.k.*eps.*a.l0 + a.d.*vel;
     
-    % passive_dyn spring
-    k_pass = 5;
-    c_pass = 20;
-
-    F_pass = k_pass.*(a.l0 - eps.*a.l0) + c_pass.*vel;
-    
     
     % dynamic force (negative for contraction)
-    F = -(F_s - F_sp - F_pass);
+    F = -(F_s - F_sp);
     % address complex values
     if ~isreal(F)
         warning('Model in extension causes residual imaginary components')

@@ -5,6 +5,7 @@ function P = actuatorControl(t,x,a)
     % gains
     Kp = 300;
     Kd = 50;
-    
-    P = bar(Kp.*(-a.x_des(t) + x(1)) + Kd.*(-a.dx_des(t) + x(2)));
+
+    P = bar(Kp.*(-a.x_des(t) + x(1)) + Kd.*(-a.dx_des(t) + x(4)));
+
 end
